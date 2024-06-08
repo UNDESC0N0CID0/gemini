@@ -20,8 +20,7 @@ export class GeminiService {
     this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
   }
 
-  startNewConversation(): string {
-    const id = uuidv4();
+  startNewConversation(id = uuidv4()): string {
     this.conversations.set(id, {
       id,
       history: [
@@ -34,8 +33,16 @@ export class GeminiService {
     return id;
   }
 
-  getConversation(id: string): Conversation | undefined {
-    return this.conversations.get(id);
+  createConversation(id: string) {
+    return this.startNewConversation(id);
+  }
+  getConversation(id: string): Conversation {
+    let conversation = this.conversations.get(id);
+    if (!conversation) {
+      conversation = this.conversations.get(this.createConversation(id));
+      this.conversations.set(id, conversation);
+    }
+    return conversation;
   }
 
   async chat(message: string, conversationId: string): Promise<string> {
@@ -59,10 +66,6 @@ export class GeminiService {
 
     const result = await chatSession.sendMessage(message);
     const response = result.response.text();
-
-    // Actualizar el historial
-    // conversation.history.push({ role: 'user', parts: [{ text: message }] });
-    // conversation.history.push({ role: 'model', parts: [{ text: response }] });
 
     return response;
   }

@@ -17,14 +17,6 @@ import { GeminiService } from './gemini.service';
 export class GeminiController {
   constructor(private readonly geminiService: GeminiService) {}
 
-  @Post('start')
-  @HttpCode(HttpStatus.OK)
-  startConversation() {
-    // @Body() startDto: StartConversationDto
-    const conversationId = this.geminiService.startNewConversation();
-    return { conversationId };
-  }
-
   @Post('chat/:id')
   @HttpCode(HttpStatus.OK)
   async chat(@Param('id') id: string, @Body() chatDto: ChatMessageDto) {
