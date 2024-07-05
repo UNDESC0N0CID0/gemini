@@ -17,7 +17,7 @@ export class GeminiService {
   constructor(private configService: ConfigService) {
     const apiKey = this.configService.get('appConfig.GeminiApiKey');
     this.genAI = new GoogleGenerativeAI(apiKey);
-    this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
   }
 
   startNewConversation(id = uuidv4()): string {
@@ -26,7 +26,7 @@ export class GeminiService {
       history: [
         {
           role: 'user',
-          parts: [{ text: 'Por favor, habla en español.' }],
+          parts: [{ text: 'Por favor, habla en español, con respuestas cortas y sin emojis o caritas.' }],
         },
       ],
     });
@@ -52,7 +52,7 @@ export class GeminiService {
     }
 
     const generationConfig = {
-      temperature: 1,
+      temperature: 1.65,
       topP: 0.95,
       topK: 64,
       maxOutputTokens: 8192,
